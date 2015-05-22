@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">DynamicForm</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="follow_step">Procesos y sus pasos</string>
+    <string name="title_activity_process">Procesos</string>
+    <string name="process_title_caption">Procesos de la categoria</string>
+    <string name="title_activity_step">StepActivity</string>
+    <string name="next_button_caption">Siguiente</string>
+    <string name="caption_process_select">Seleccionar Proceso:</string>
+</resources>
