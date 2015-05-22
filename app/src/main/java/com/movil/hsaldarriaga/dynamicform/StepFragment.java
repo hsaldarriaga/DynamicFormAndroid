@@ -116,8 +116,8 @@ public class StepFragment extends Fragment {
                     activity.ButtonSetText("Terminar");
                 else {
                     activity.ButtonSetText("Siguiente");
-                    activity.next_step_index = dec.go_to_step;
                 }
+                activity.next_step_index = dec.go_to_step;
                 activity.EnableButton();
                 break;
             } else {
