@@ -1,6 +1,7 @@
 package com.movil.hsaldarriaga.dynamicform;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +9,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +32,7 @@ public class StepActivity extends AppCompatActivity implements DownloadFinish{
         next_button = (Button)findViewById(R.id.next_step);
         JsonDownloader down = new JsonDownloader(this);
         down.execute("https://dynamicformapi.herokuapp.com/steps/by_procedure/" + pro_id + ".json");
+        ((ViewGroup)findViewById(R.id.step_main_container)).setBackgroundColor(Step.generateRandomColor(Color.WHITE));
     }
 
     @Override
@@ -59,18 +63,24 @@ public class StepActivity extends AppCompatActivity implements DownloadFinish{
         bar.setVisibility(View.INVISIBLE);
         try {
             JSONArray jsonarray = new JSONArray(obj);
-            steps = new Step[jsonarray.length()];
-            for (int i = 0; i < jsonarray.length(); i++) {
-                steps[i] = Step.getStep(jsonarray.getJSONObject(i));
+            if (jsonarray.length() > 0) {
+                steps = new Step[jsonarray.length()];
+                for (int i = 0; i < jsonarray.length(); i++) {
+                    steps[i] = Step.getStep(jsonarray.getJSONObject(i));
+                }
+                StepFragment frag = new StepFragment();
+                frag.step = steps[0];
+                FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+                trans.add(R.id.field_container, frag, null)
+                        .commit();
+            } else {
+                finish();
+                Toast.makeText(this, "Este Proceso, no tiene pasos...", Toast.LENGTH_LONG).show();
             }
-            StepFragment frag = new StepFragment();
-            frag.step = steps[0];
-            FragmentTransaction trans =  getSupportFragmentManager().beginTransaction();
-            trans.add(R.id.field_container, frag, null)
-                    .commit();
         } catch (JSONException e) {
             Log.e(e.toString(), e.getMessage());
         }
+
     }
 
     public void DisableButton() {
@@ -100,12 +110,13 @@ public class StepActivity extends AppCompatActivity implements DownloadFinish{
                 StepFragment frag = new StepFragment();
                 frag.step = s;
                 FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
-                trans.replace(R.id.field_container, frag, null)
+                trans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(R.id.field_container, frag, null)
                         .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
             }
         }
+        ((ViewGroup)findViewById(R.id.step_main_container)).setBackgroundColor(Step.generateRandomColor(Color.WHITE));
     }
 
     private Button next_button;

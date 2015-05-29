@@ -1,13 +1,12 @@
 package com.movil.hsaldarriaga.dynamicform;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,6 +21,8 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Random;
 
 /**
  * Created by hass-pc on 21/05/2015.
@@ -141,10 +142,11 @@ public class Step {
     }
 
     public static View getQuestion(Context c, Field field, final StepFragment frag) {
-        TextView tv = new TextView(c);
+        View v = View.inflate(c, R.layout.field_question, null);
+        TextView tv = (TextView) v.findViewById(R.id.question_caption);
         tv.setText(field.caption);
-        Spinner spinner = new Spinner(c);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(c, android.R.layout.simple_spinner_item, field.Possible_Values);
+        Spinner spinner = (Spinner) v.findViewById(R.id.numeric_edittext);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(c, R.layout.spinner_item_layout, field.Possible_Values);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -158,41 +160,26 @@ public class Step {
                 frag.ValidateDecisions();
             }
         });
-        LinearLayout layout = new LinearLayout(c);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        layout.addView(tv);
-        layout.addView(spinner);
-        return layout;
+        return v;
     }
     public static View getBoolean(Context c, Field field, final StepFragment frag) {
-        LinearLayout layout = new LinearLayout(c);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        TextView tv = new TextView(c);
+        View v = View.inflate(c, R.layout.field_boolean, null);
+        TextView tv = (TextView) v.findViewById(R.id.boolean_caption);
         tv.setText(field.caption);
-        CheckBox box = new CheckBox(c);
-        layout.addView(tv);
-        layout.addView(box);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)box.getLayoutParams();
-        params.gravity = Gravity.CENTER_VERTICAL;
-        box.setLayoutParams(params);
+        CheckBox box = (CheckBox) v.findViewById(R.id.numeric_edittext);
         box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 frag.ValidateDecisions();
             }
         });
-        return layout;
+        return v;
     }
     public static View getNumeric(Context c, Field field, final StepFragment frag) {
-        LinearLayout layout = new LinearLayout(c);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        TextView tv = new TextView(c);
+        View v = View.inflate(c, R.layout.field_numeric, null);
+        TextView tv = (TextView) v.findViewById(R.id.numeric_caption);
         tv.setText(field.caption);
-        EditText tv_num = new EditText(c);
-        tv_num.setInputType(InputType.TYPE_CLASS_NUMBER);
-        layout.addView(tv);
-        layout.addView(tv_num);
+        EditText tv_num = (EditText) v.findViewById(R.id.numeric_edittext);
         tv_num.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -201,7 +188,7 @@ public class Step {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                frag.ValidateDecisions();
             }
 
             @Override
@@ -209,12 +196,24 @@ public class Step {
                 frag.ValidateDecisions();
             }
         });
-        return  layout;
+        return v;
     }
     public static View getLabel(Context c, Field field, final StepFragment frag) {
-        TextView tv = new TextView(c);
-        tv.setTextSize(25);
+        View v = View.inflate(c, R.layout.field_text, null);
+        TextView tv = (TextView) v.findViewById(R.id.text_textview);
         tv.setText(field.caption);
-        return tv;
+        return v;
+    }
+
+    public static int generateRandomColor(int mix) {
+        Random random = new Random();
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+        red = (red + Color.red(mix)) / 2;
+        green = (green + Color.green(mix)) / 2;
+        blue = (blue + Color.blue(mix)) / 2;
+        int color = Color.rgb(red, green, blue);
+        return color;
     }
 }

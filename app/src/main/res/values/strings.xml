@@ -5,7 +5,7 @@
     <string name="follow_step">Procesos y sus pasos</string>
     <string name="title_activity_process">Procesos</string>
     <string name="process_title_caption">Procesos de la categoria</string>
-    <string name="title_activity_step">StepActivity</string>
+    <string name="title_activity_step">Pasos</string>
     <string name="next_button_caption">Siguiente</string>
     <string name="caption_process_select">Seleccionar Proceso:</string>
 </resources>

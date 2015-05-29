@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -28,6 +29,7 @@ public class ProcessActivity extends AppCompatActivity implements DownloadFinish
         setContentView(R.layout.activity_process);
         TextView tv = (TextView) findViewById(R.id.process_title);
         listview = (ListView)findViewById(R.id.listView2);
+        progressBar = (ProgressBar)findViewById(R.id.process_progressBar);
         tv.setText(tv.getText() + " " + getIntent().getStringExtra("category"));
         String url = "https://dynamicformapi.herokuapp.com/procedures/by_group/"+ getIntent().getLongExtra("category_id", 0) +".json";
         JsonDownloader down = new JsonDownloader(this);
@@ -59,6 +61,7 @@ public class ProcessActivity extends AppCompatActivity implements DownloadFinish
     @Override
     public void OnFinishDownload(String obj) {
         try {
+            progressBar.setVisibility(View.INVISIBLE);
             List<Process> pro_list = new ArrayList<>();
             JSONArray processes = new JSONArray(obj);
             for (int i = 0; i < processes.length(); i++) {
@@ -89,4 +92,5 @@ public class ProcessActivity extends AppCompatActivity implements DownloadFinish
 
     private ProcessAdapter adapter;
     private ListView listview;
+    private ProgressBar progressBar;
 }
