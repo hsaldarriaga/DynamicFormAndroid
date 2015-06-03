@@ -1,6 +1,8 @@
 package com.movil.hsaldarriaga.dynamicform;
 
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.Stack;
+
 
 public class StepActivity extends AppCompatActivity implements DownloadFinish{
 
@@ -32,7 +36,10 @@ public class StepActivity extends AppCompatActivity implements DownloadFinish{
         next_button = (Button)findViewById(R.id.next_step);
         JsonDownloader down = new JsonDownloader(this);
         down.execute("https://dynamicformapi.herokuapp.com/steps/by_procedure/" + pro_id + ".json");
-        ((ViewGroup)findViewById(R.id.step_main_container)).setBackgroundColor(Step.generateRandomColor(Color.WHITE));
+        int col = Step.generateRandomColor(Color.WHITE);
+        ((ViewGroup)findViewById(R.id.step_main_container)).setBackgroundColor(col);
+        pila_colores = new Stack<>();
+        pila_colores.push(col);
     }
 
     @Override
@@ -116,10 +123,45 @@ public class StepActivity extends AppCompatActivity implements DownloadFinish{
                         .commit();
             }
         }
-        ((ViewGroup)findViewById(R.id.step_main_container)).setBackgroundColor(Step.generateRandomColor(Color.WHITE));
+        final ViewGroup group = (ViewGroup)findViewById(R.id.step_main_container);
+        int col = Step.generateRandomColor(Color.WHITE);
+        int colorFrom = pila_colores.peek();
+        int colorTo = col;
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                group.setBackgroundColor((Integer) animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.start();
+        pila_colores.push(col);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (pila_colores.size() > 1) {
+            int col = pila_colores.pop();
+            int col2 = pila_colores.peek();
+            final ViewGroup group = (ViewGroup)findViewById(R.id.step_main_container);
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), col, col2);
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    group.setBackgroundColor((Integer) animator.getAnimatedValue());
+                }
+
+            });
+            colorAnimation.start();
+        }
+        super.onBackPressed();
     }
 
     private Button next_button;
     private Step[] steps;
     public long next_step_index = 0;
+    private Stack<Integer> pila_colores;
 }
