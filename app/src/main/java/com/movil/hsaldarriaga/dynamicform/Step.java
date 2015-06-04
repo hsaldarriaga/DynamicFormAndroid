@@ -96,7 +96,6 @@ public class Step {
             step.step_id = step_json.getLong("step_id");
             step.procedure_id = step_json.getLong("procedure_id");
             String content = step_json.getString("content");
-            content = Html.fromHtml(content).toString();
             JSONObject content_json = new JSONObject(content);
             JSONArray fields = content_json.getJSONArray("Fields");
             Field[] fields_array = new Field[fields.length()];

@@ -73,7 +73,7 @@ public class StepFragment extends Fragment {
                 if (field != null) {
                     switch (field.field_type) {
                         case QUESTION:
-                            Spinner sp = (Spinner)((ViewGroup)fields_map.get(field.field_id)).getChildAt(1);
+                            Spinner sp = (Spinner)((ViewGroup)fields_map.get(field.field_id)).getChildAt(2);
                             if (!br.Value.equals(sp.getSelectedItem().toString()))
                                 can_continue = false;
                             break;
@@ -90,11 +90,11 @@ public class StepFragment extends Fragment {
                                 int val_comp = Integer.parseInt(br.Value);
                                 switch (br.comparision_type) {
                                     case GREATER:
-                                        if (!(val_comp > val))
+                                        if (!(val_comp < val))
                                             can_continue = false;
                                         break;
                                     case LESS:
-                                        if (!(val_comp < val))
+                                        if (!(val_comp > val))
                                             can_continue = false;
                                         break;
                                     case EQUAL:
